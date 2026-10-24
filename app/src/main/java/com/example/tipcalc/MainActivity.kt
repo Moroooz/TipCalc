@@ -13,10 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,6 +90,57 @@ fun CalculatorScreen() {
                     focusedContainerColor = Color(0xFFFFBFCC)
                 )
             )
+        }
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(text = "Чаевые", fontSize = 16.sp)
+            Slider(
+                value = 5f,
+                onValueChange = {},
+                valueRange = 0f..25f,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "0", fontSize = 16.sp)
+                Text(text = "5", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "25", fontSize = 16.sp)
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = "Скидка:",
+                fontSize = 16.sp,
+                modifier = Modifier.padding(top = 6.dp)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .selectableGroup(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                val discountOptions = listOf(3, 5, 7, 10)
+                discountOptions.forEach { discount ->
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        RadioButton(
+                            selected = false,
+                            onClick = null
+                        )
+                        Text(text = "$discount%", fontSize = 16.sp)
+                    }
+                }
+            }
         }
     }
 }
