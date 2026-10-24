@@ -6,15 +6,27 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.tipcalc.ui.theme.TipCalcTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,6 +45,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun CalculatorScreen() {
     Column(
@@ -40,7 +53,42 @@ fun CalculatorScreen() {
             .fillMaxSize()
             .padding(horizontal = 20.dp, vertical = 35.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) { }
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text(text = "Сумма заказа: ", fontSize = 16.sp)
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.width(200.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = Color(0xFFFFBFCC),
+                    focusedContainerColor = Color(0xFFFFBFCC)
+                )
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text(text = "Количество блюд: ", fontSize = 16.sp)
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.width(80.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = Color(0xFFFFBFCC),
+                    focusedContainerColor = Color(0xFFFFBFCC)
+                )
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
