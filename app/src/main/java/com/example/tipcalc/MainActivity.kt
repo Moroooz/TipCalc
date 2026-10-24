@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
@@ -23,6 +25,10 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,6 +57,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CalculatorScreen() {
+    var orderAmount by remember { mutableStateOf("") }
+    var dishesCountText by remember { mutableStateOf("") }
+    var tipPercentage by remember { mutableStateOf(5f) }
+
+    val dishesCount = dishesCountText.toIntOrNull() ?: 0
+    val selectedDiscount = when {
+        dishesCount in 1..2 -> 3
+        dishesCount in 3..5 -> 5
+        dishesCount in 6..10 -> 7
+        dishesCount > 10 -> 10
+        else -> 0
+    }
+
+    val baseAmount = orderAmount.toDoubleOrNull() ?: 0.0
+    val discountMultiplier = (100 - selectedDiscount) / 100.0
+    val tipMultiplier = tipPercentage.toInt() / 100.0
+
+    val finalTotal = (baseAmount * discountMultiplier) + (baseAmount * tipMultiplier)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,8 +89,8 @@ fun CalculatorScreen() {
         ) {
             Text(text = "Сумма заказа: ", fontSize = 16.sp)
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = orderAmount,
+                onValueChange = {orderAmount = it},
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.width(200.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -81,8 +106,8 @@ fun CalculatorScreen() {
         ) {
             Text(text = "Количество блюд: ", fontSize = 16.sp)
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = dishesCountText,
+                onValueChange = {dishesCountText = it},
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.width(80.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -95,8 +120,8 @@ fun CalculatorScreen() {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(text = "Чаевые", fontSize = 16.sp)
             Slider(
-                value = 5f,
-                onValueChange = {},
+                value = tipPercentage,
+                onValueChange = {tipPercentage = it},
                 valueRange = 0f..25f,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -105,7 +130,7 @@ fun CalculatorScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "0", fontSize = 16.sp)
-                Text(text = "5", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "${tipPercentage.toInt()}%", fontSize = 14.sp, color = Color.Gray)
                 Text(text = "25", fontSize = 16.sp)
             }
         }
@@ -134,7 +159,7 @@ fun CalculatorScreen() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         RadioButton(
-                            selected = false,
+                            selected = (selectedDiscount == discount),
                             onClick = null
                         )
                         Text(text = "$discount%", fontSize = 16.sp)
@@ -142,6 +167,42 @@ fun CalculatorScreen() {
                 }
             }
         }
+
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 8.dp),
+            color = Color.LightGray,
+            thickness = 1.dp
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "Итого к оплате:",
+                fontSize = 18.sp,
+                color = Color.Gray
+            )
+
+            Text(
+                text = String.format("%.2f ₽", finalTotal),
+                fontSize = 32.sp,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            // Краткая детализация расчета для удобства
+            if (baseAmount > 0) {
+                Text(
+                    text = "Скидка: $selectedDiscount% | Чаевые: ${tipPercentage.toInt()}%",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+
     }
 }
 
